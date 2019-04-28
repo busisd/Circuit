@@ -22,6 +22,9 @@ class gate:
 		self.img.draw(win)
 		self.text.draw(win)
 		
+	def add_input(self, gate):
+		pass
+		
 class and_gate(gate):
 	def __init__(self, output = False, pos = Point(0,0)):
 		gate.__init__(self, output, pos)
@@ -38,6 +41,9 @@ class and_gate(gate):
 					break
 		super().update_color()
 		
+	def add_input(self, new_gate):
+		if (not new_gate in self.inputs):
+			self.inputs.append(new_gate)
 	
 class or_gate(gate):
 	def __init__(self, output = False, pos = Point(0,0)):
@@ -54,6 +60,10 @@ class or_gate(gate):
 					self.output = True
 					break
 		super().update_color()
+	
+	def add_input(self, new_gate):
+		if (not new_gate in self.inputs):
+			self.inputs.append(new_gate)
 
 def dist_between(pos1, pos2):
 	return ( (pos1.getX()-pos2.getX())**2 + (pos1.getY()-pos2.getY())**2 )**(1/2)
@@ -98,7 +108,7 @@ def main():
 				start_gate = None
 			
 			if (gate_clicked is not None):
-				if (most_recent_key == 'f'):
+				if (most_recent_key == 'f' and type(gate_clicked) is gate):
 					gate_clicked.output = not gate_clicked.output
 				if (most_recent_key == 'c'):
 					if (start_gate is None):
