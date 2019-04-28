@@ -5,6 +5,7 @@ class gate:
 		self.inputs = []
 		self.output = output
 		self.img = Circle(pos,10)
+		self.text = Text(pos, "G")
 	
 	def update_output(self):
 		self.update_color()
@@ -14,10 +15,15 @@ class gate:
 			self.img.setFill("green")
 		else:
 			self.img.setFill("red")
+			
+	def draw_self(self, win):
+		self.img.draw(win)
+		self.text.draw(win)
 		
 class and_gate(gate):
 	def __init__(self, output = False, pos = Point(0,0)):
 		gate.__init__(self, output, pos)
+		self.text = Text(pos, "A")
 	
 	def update_output(self):
 		if (not self.inputs): #empty list
@@ -34,6 +40,7 @@ class and_gate(gate):
 class or_gate(gate):
 	def __init__(self, output = False, pos = Point(0,0)):
 		gate.__init__(self, output, pos)
+		self.text = Text(pos, "O")
 	
 	def update_output(self):
 		if (not self.inputs): #empty list
@@ -51,12 +58,23 @@ def main():
 	win = GraphWin("Circuit", 400, 400)
 
 	key = None
+	most_recent_key = 'z'
 	while(key != 'x'):
 		key = win.checkKey()
+		if (key != ""):
+			most_recent_key = key
+		
 		pos = win.checkMouse()
 		if pos is not None:
-			gates.append(and_gate(pos = pos))
-			gates[len(gates)-1].img.draw(win)
+			if (most_recent_key == 'a'):
+				gate_type = and_gate
+			elif (most_recent_key == 's'):
+				gate_type = or_gate
+			else:
+				gate_type = gate
+			
+			gates.append(gate_type(pos = pos))
+			gates[len(gates)-1].draw_self(win)
 		if (key == 'r'):
 			for g in gates:
 				g.update_output()
